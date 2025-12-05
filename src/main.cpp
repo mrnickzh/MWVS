@@ -7,11 +7,13 @@
 
 #include "Protocol/Packets/EntityActionServer.hpp"
 
-int main() {
+int main(int argc, char* argv[]) {
     ix::initNetSystem();
 
-    int port = 20202;
-    std::string host("127.0.0.1");
+    if (argc != 3) { return 1; }
+
+    int port = atoi(argv[2]);
+    std::string host(argv[1]);
     ix::WebSocketServer server(port, host);
     Server& serverInstance = Server::getInstance();
     std::mutex serverInstanceMutex;
