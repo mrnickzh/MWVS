@@ -5,6 +5,8 @@
 #include "Protocol/ServerPacketHelper.hpp"
 #include <mutex>
 
+#include "Protocol/Packets/EntityActionServer.hpp"
+
 int main() {
     ix::initNetSystem();
 
@@ -43,7 +45,16 @@ int main() {
             auto it = std::find_if(serverInstance.clients.begin(), serverInstance.clients.end(), [remoteaddr](std::pair<ClientSession*, void*> f)->bool{ return f.first->clientaddress == remoteaddr; });
             if (it != serverInstance.clients.end()) {
                 std::lock_guard<std::mutex> guard(serverInstanceMutex);
+                std::string tempuuid = std::move(it->first->uuid);
                 serverInstance.clients.erase(it);
+                for (auto clt : serverInstance.clients) {
+                    if (clt.first) {
+                        EntityActionServer replicationpacket;
+                        replicationpacket.uuid = tempuuid;
+                        replicationpacket.action = 1;
+                        Server::getInstance().sendPacket(clt.first, &replicationpacket);
+                    }
+                }
             }
         }
     });
