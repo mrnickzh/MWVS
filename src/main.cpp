@@ -48,6 +48,8 @@ int main() {
         }
     });
 
+    std::cout << "Starting server on " << host << ":" << port << "..." << std::endl;
+
     auto res = server.listen();
     if (!res.first)
     {

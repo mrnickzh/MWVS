@@ -20,11 +20,23 @@ add_executable(MWVS src/main.cpp)
 
 target_link_libraries(MWVS PRIVATE ixwebsocket)
 
-add_subdirectory("D:/MineWeb/MineWebServer"
-        "${CMAKE_BINARY_DIR}/server-build")
+if (MSVC)
+        add_subdirectory("D:/MineWeb/MineWebServer"
+                "${CMAKE_BINARY_DIR}/server-build")
+else()
+        add_subdirectory("/workspace/MineWebServer"
+                "${CMAKE_BINARY_DIR}/server-build")
+endif()
 
 target_link_libraries(MWVS PRIVATE MineWebServer)
+if (MSVC)
+        target_include_directories(MWVS PRIVATE "D:/MineWeb/MineWebServer")
+else()
+        target_include_directories(MWVS PRIVATE "/workspace/MineWebServer")
+endif() 
 
-target_include_directories(MWVS PRIVATE "D:/MineWeb/MineWebServer")
-
-add_compile_options(/Od /Zi /Ob0 /RTC1 /Zo /Gm- /MP /MT)
+if (MSVC)
+        add_compile_options(/Od /Zi /Ob0 /RTC1 /Zo /Gm- /MP /MT)
+else()
+        add_compile_options(-O0 -g -Wall -Wextra -pthread)
+endif()
