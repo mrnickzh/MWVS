@@ -4,16 +4,36 @@
 #include <Server.hpp>
 #include "Protocol/ServerPacketHelper.hpp"
 #include <mutex>
-
+#include "../libs/json.hpp"
 #include "Protocol/Packets/EntityActionServer.hpp"
+#include <fstream>
+
+nlohmann::json config;
+
+void save() {
+    std::ofstream savedJson("config.json");
+    if (savedJson) {
+        savedJson << config.dump(4);
+    }
+}
+
+void load() {
+    std::ifstream file("config.json");
+
+    if (!file) {
+        config["host"] = "0.0.0.0";
+        config["port"] = 20202;
+
+        save();
+    } else file >> config;
+}
 
 int main(int argc, char* argv[]) {
+    load();
+    std::string host = config["host"];
+    int port = config["port"];
+
     ix::initNetSystem();
-
-    if (argc != 3) { return 1; }
-
-    int port = atoi(argv[2]);
-    std::string host(argv[1]);
     ix::WebSocketServer server(port, host);
     Server& serverInstance = Server::getInstance();
     std::mutex serverInstanceMutex;

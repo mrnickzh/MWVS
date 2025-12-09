@@ -16,7 +16,7 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(IXWebSocket)
 
-add_executable(MWVS src/main.cpp)
+add_executable(MWVS src/main.cpp libs/json.hpp)
 
 target_link_libraries(MWVS PRIVATE ixwebsocket)
 
@@ -27,6 +27,8 @@ else()
         add_subdirectory("/workspace/MineWebServer"
                 "${CMAKE_BINARY_DIR}/server-build")
 endif()
+
+target_compile_definitions(MineWebServer PRIVATE BUILD_TYPE_DEDICATED)
 
 target_link_libraries(MWVS PRIVATE MineWebServer)
 if (MSVC)
