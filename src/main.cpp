@@ -7,6 +7,7 @@
 #include "../libs/json.hpp"
 #include "Protocol/Packets/EntityActionServer.hpp"
 #include <fstream>
+#include <WorldSaving/RegionRegistory.hpp>
 
 nlohmann::json config;
 
@@ -91,6 +92,24 @@ int main(int argc, char* argv[]) {
 
     server.disablePerMessageDeflate();
     server.start();
+    std::thread consoleThread([&]() {
+        std::string line;
+
+        while (true) {
+            std::getline(std::cin, line);
+
+            if (!std::cin.good()) {
+                break;
+            }
+            if(line == "save-all") {
+                for (auto pair : Server::getInstance().chunks) {
+                    RegionRegistory::getInstance().save(pair.first);
+                }
+            }
+        }
+    });
+
+    consoleThread.detach();
     server.wait();
 
     ix::uninitNetSystem();
