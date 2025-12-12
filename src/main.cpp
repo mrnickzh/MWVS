@@ -102,7 +102,7 @@ int main(int argc, char* argv[]) {
                 break;
             }
             if(line == "save-all") {
-                for (auto pair : Server::getInstance().chunks) {
+                for (auto& pair : Server::getInstance().chunks) {
                     RegionRegistory::getInstance().save(pair.first);
                 }
             }

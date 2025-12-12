@@ -20,6 +20,8 @@ add_executable(MWVS src/main.cpp libs/json.hpp)
 
 target_link_libraries(MWVS PRIVATE ixwebsocket)
 
+set(BUILD_TYPE_DEDICATED ON)
+
 if (MSVC)
         add_subdirectory("D:/MineWeb/MineWebServer"
                 "${CMAKE_BINARY_DIR}/server-build")
@@ -28,7 +30,9 @@ else()
                 "${CMAKE_BINARY_DIR}/server-build")
 endif()
 
-target_compile_definitions(MineWebServer PRIVATE BUILD_TYPE_DEDICATED)
+target_compile_definitions(MineWebServer PUBLIC BUILD_TYPE_DEDICATED)
+
+target_link_libraries(MWVS PRIVATE "${CMAKE_SOURCE_DIR}/libs/zlib.lib")
 
 target_link_libraries(MWVS PRIVATE MineWebServer)
 if (MSVC)
