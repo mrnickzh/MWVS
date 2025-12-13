@@ -32,8 +32,6 @@ endif()
 
 target_compile_definitions(MineWebServer PUBLIC BUILD_TYPE_DEDICATED)
 
-target_link_libraries(MWVS PRIVATE "${CMAKE_SOURCE_DIR}/libs/zlib.lib")
-
 target_link_libraries(MWVS PRIVATE MineWebServer)
 if (MSVC)
         target_include_directories(MWVS PRIVATE "D:/MineWeb/MineWebServer")
