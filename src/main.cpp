@@ -39,6 +39,10 @@ int main(int argc, char* argv[]) {
     Server& serverInstance = Server::getInstance();
     std::mutex serverInstanceMutex;
 
+    if (std::filesystem::exists("world.mww")) {
+        RegionRegistory::getInstance().importAll();
+    }
+
     serverInstance.setCallback([&](ClientSession* session, std::vector<uint8_t> data) {
         std::string str(data.begin(), data.end());
         static_cast<ix::WebSocket*>(serverInstance.clients[session])->sendBinary(str);
@@ -92,24 +96,7 @@ int main(int argc, char* argv[]) {
 
     server.disablePerMessageDeflate();
     server.start();
-    std::thread consoleThread([&]() {
-        std::string line;
 
-        while (true) {
-            std::getline(std::cin, line);
-
-            if (!std::cin.good()) {
-                break;
-            }
-            if(line == "save-all") {
-                for (auto& pair : Server::getInstance().chunks) {
-                    RegionRegistory::getInstance().save(pair.first);
-                }
-            }
-        }
-    });
-
-    consoleThread.detach();
     server.wait();
 
     ix::uninitNetSystem();
