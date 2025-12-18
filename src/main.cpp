@@ -74,6 +74,7 @@ int main(int argc, char* argv[]) {
                 std::lock_guard<std::mutex> guard(serverInstanceMutex);
                 std::string tempuuid = std::move(it->first->uuid);
                 serverInstance.clients.erase(it);
+                serverInstance.entities.erase(ServerEntity(tempuuid, Vec3<float>(0.0f, 0.0f, 0.0f), Vec3<float>(0.0f, 0.0f, 0.0f), Vec3<float>(0.0f, 0.0f, 0.0f)));
                 for (auto clt : serverInstance.clients) {
                     if (clt.first) {
                         EntityActionServer replicationpacket;
