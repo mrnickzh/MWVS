@@ -39,14 +39,14 @@ int main(int argc, char* argv[]) {
     Server& serverInstance = Server::getInstance();
     std::mutex serverInstanceMutex;
 
-    if (std::filesystem::exists("world.mww")) {
-        RegionRegistory::getInstance().importAll();
-    }
-
     serverInstance.setCallback([&](ClientSession* session, std::vector<uint8_t> data) {
         std::string str(data.begin(), data.end());
         static_cast<ix::WebSocket*>(serverInstance.clients[session])->sendBinary(str);
     });
+
+    if (std::filesystem::exists("world.mww")) {
+        RegionRegistory::getInstance().importAll();
+    }
 
     server.setOnClientMessageCallback([&](std::shared_ptr<ix::ConnectionState> connectionState, ix::WebSocket& webSocket, const ix::WebSocketMessagePtr & msg) {
         std::string remoteaddr = std::string(connectionState->getRemoteIp()) + " " + std::to_string(connectionState->getRemotePort());

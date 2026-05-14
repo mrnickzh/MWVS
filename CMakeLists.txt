@@ -11,7 +11,7 @@ set(USE_ZLIB OFF CACHE BOOL "" FORCE)
 FetchContent_Declare(
         IXWebSocket
         GIT_REPOSITORY https://github.com/machinezone/IXWebSocket.git
-        GIT_TAG        master
+        GIT_TAG master
 )
 
 FetchContent_MakeAvailable(IXWebSocket)
@@ -19,6 +19,14 @@ FetchContent_MakeAvailable(IXWebSocket)
 add_executable(MWVS src/main.cpp libs/json.hpp)
 
 target_link_libraries(MWVS PRIVATE ixwebsocket)
+
+FetchContent_Declare(
+        lua
+        GIT_REPOSITORY https://github.com/marovira/lua
+        GIT_TAG master
+)
+
+FetchContent_MakeAvailable(lua)
 
 set(BUILD_TYPE_DEDICATED ON)
 
@@ -32,7 +40,10 @@ endif()
 
 target_compile_definitions(MineWebServer PUBLIC BUILD_TYPE_DEDICATED)
 
+target_link_libraries(MineWebServer PUBLIC lua::lua)
+
 target_link_libraries(MWVS PRIVATE MineWebServer)
+
 if (MINGW OR MSVC)
         target_include_directories(MWVS PRIVATE "D:/MineWeb/MineWebServer")
 else()
