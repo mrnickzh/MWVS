@@ -48,6 +48,8 @@ int main(int argc, char* argv[]) {
         RegionRegistory::getInstance().importAll();
     }
 
+    serverInstance.start();
+
     server.setOnClientMessageCallback([&](std::shared_ptr<ix::ConnectionState> connectionState, ix::WebSocket& webSocket, const ix::WebSocketMessagePtr & msg) {
         std::string remoteaddr = std::string(connectionState->getRemoteIp()) + " " + std::to_string(connectionState->getRemotePort());
 
